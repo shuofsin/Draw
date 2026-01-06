@@ -7,12 +7,13 @@ WindowWidth = love.graphics.getWidth()
 WindowHeight = love.graphics.getHeight()
 CellSize = 50
 Pixels = {}
+ColorIcons = {}
 Colors = {
-    white={1, 1, 1, 1},
-    black={0, 0, 0, 1},
-    red={1, 0, 0, 1},
-    green={0, 1, 0, 1},
-    blue={0, 0, 1, 1}
+    ["white"]={1, 1, 1, 1},
+    ["black"]={0, 0, 0, 1},
+    ["red"]={1, 0, 0, 1},
+    ["green"]={0, 1, 0, 1},
+    ["blue"]={0, 0, 1, 1}
 }
 
 function love.load()
@@ -23,6 +24,12 @@ function love.load()
             local yp = j * CellSize
             Pixels[i][j] = {x=xp, y=yp, color=BackgroundColor, background=true}
         end
+    end
+    for i, value in ipairs(Colors)  do
+        local ix = 0
+        local iy = 0
+        ColorIcons[i] = {x=ix, y=iy, color={1, 1, 0, 1}}
+        print("hello, world!")
     end
 end
 
@@ -39,6 +46,7 @@ function love.update(dt)
                 end 
             end
         end 
+        
     end 
 end
 
@@ -49,6 +57,10 @@ function love.draw()
             love.graphics.rectangle("fill", Pixels[i][j].x, Pixels[i][j].y, CellSize, CellSize)
         end 
     end 
+    for i, v in ipairs(ColorIcons) do
+        love.graphics.setColor(v.color)
+        love.graphics.rectangle("fill", v.x, v.y, CellSize, CellSize)
+    end
 end 
 
 function love.mousepressed(x, y, button)
