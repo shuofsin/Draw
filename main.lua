@@ -9,12 +9,12 @@ CellSize = 50
 Pixels = {}
 ColorIcons = {}
 Colors = {
-    ["white"]={1, 1, 1, 1},
-    ["black"]={0, 0, 0, 1},
-    ["red"]={1, 0, 0, 1},
-    ["green"]={0, 1, 0, 1},
-    ["blue"]={0, 0, 1, 1}
-}
+        ["white"]={1, 1, 1, 1},
+        ["black"]={0, 0, 0, 1},
+        ["red"]={1, 0, 0, 1},
+        ["green"]={0, 1, 0, 1},
+        ["blue"]={0, 0, 1, 1}
+    }
 
 function love.load()
     for i=0,16,1 do
@@ -24,12 +24,6 @@ function love.load()
             local yp = j * CellSize
             Pixels[i][j] = {x=xp, y=yp, color=BackgroundColor, background=true}
         end
-    end
-    for i, value in ipairs(Colors)  do
-        local ix = 0
-        local iy = 0
-        ColorIcons[i] = {x=ix, y=iy, color={1, 1, 0, 1}}
-        print("hello, world!")
     end
 end
 
@@ -57,10 +51,14 @@ function love.draw()
             love.graphics.rectangle("fill", Pixels[i][j].x, Pixels[i][j].y, CellSize, CellSize)
         end 
     end 
-    for i, v in ipairs(ColorIcons) do
-        love.graphics.setColor(v.color)
-        love.graphics.rectangle("fill", v.x, v.y, CellSize, CellSize)
-    end
+    local i = 0
+    for name, value in pairs(Colors) do 
+        local x = ((i % 4) * CellSize)
+        local y = (math.floor(i / 4) * CellSize)
+        love.graphics.setColor(value)
+        love.graphics.rectangle("fill", x, y, CellSize, CellSize)
+        i = i + 1
+    end 
 end 
 
 function love.mousepressed(x, y, button)
