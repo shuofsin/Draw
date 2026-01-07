@@ -1,20 +1,20 @@
 
 
 Mode = "draw"
-BackgroundColor = "white"
-DrawColor = "red"
+BackgroundColor = {name="white", rgba={1, 1, 1, 1}}
+DrawColor = {name="black", rgba={0, 0, 0, 1}}
 WindowWidth = love.graphics.getWidth()
 WindowHeight = love.graphics.getHeight()
 CellSize = 50
 Pixels = {}
 ColorIcons = {}
 Colors = {
-        ["white"]={1, 1, 1, 1},
-        ["black"]={0, 0, 0, 1},
-        ["red"]={1, 0, 0, 1},
-        ["green"]={0, 1, 0, 1},
-        ["blue"]={0, 0, 1, 1}
-    }
+    {name="white", rgba={1, 1, 1, 1}},
+    {name="black", rgba={0, 0, 0, 1}},
+    {name="red", rgba={1, 0, 0, 1}},
+    {name="green", rgba={0, 1, 0, 1}},
+    {name="blue", rgba={0, 0, 1, 1}},
+}
 
 function love.load()
     for i=0,16,1 do
@@ -25,6 +25,11 @@ function love.load()
             Pixels[i][j] = {x=xp, y=yp, color=BackgroundColor, background=true}
         end
     end
+    for i, v in ipairs(Colors) do 
+        local x = (((i-1) % 4) * CellSize)
+        local y = (math.floor((i-1) / 4) * CellSize)
+        ColorIcons[i] = {x=x, y=y, color=v}
+    end 
 end
 
 function love.update(dt)
@@ -40,27 +45,29 @@ function love.update(dt)
                 end 
             end
         end 
-        
+        for _, v in ipairs(ColorIcons) do
+            if mouse_x > v.x and mouse_x < v.x + CellSize and mouse_y > v.y and mouse_y < v.y + CellSize then 
+                DrawColor = v.color
+            end 
+        end 
     end 
 end
 
 function love.draw()
     for i=0, 16, 1 do 
         for j=0, 16, 1 do
-            love.graphics.setColor(Colors[Pixels[i][j].color])
+            love.graphics.setColor(Pixels[i][j].color.rgba)
             love.graphics.rectangle("fill", Pixels[i][j].x, Pixels[i][j].y, CellSize, CellSize)
         end 
     end 
-    local i = 0
-    for name, value in pairs(Colors) do 
-        local x = ((i % 4) * CellSize)
-        local y = (math.floor(i / 4) * CellSize)
-        love.graphics.setColor(value)
-        love.graphics.rectangle("fill", x, y, CellSize, CellSize)
-        i = i + 1
+    for _, v in ipairs(ColorIcons) do 
+        love.graphics.setColor(v.color.rgba)
+        love.graphics.rectangle("fill", v.x, v.y, CellSize, CellSize)
+        love.graphics.setColor({0, 0, 0, 1})
+        love.graphics.rectangle("line", v.x, v.y, CellSize, CellSize)
     end 
 end 
 
 function love.mousepressed(x, y, button)
 
-end 
+end
