@@ -13,6 +13,7 @@ Colors = {
     {name="green", rgba={0, 1, 0, 1}},
     {name="blue", rgba={0, 0, 1, 1}},
 }
+Actions = {}
 
 function love.load()
     for i=0,16,1 do
@@ -38,6 +39,9 @@ function love.update(dt)
                 local px = Pixels[i][j].x
                 local py = Pixels[i][j].y
                 if mouse_x > px and mouse_x < px + CellSize and mouse_y > py and mouse_y < py + CellSize then 
+                    if (Pixels[i][j].color ~= DrawColor) then 
+                        table.insert(Actions, 1, {color=Pixels[i][j].color, background=Pixels[i][j].background, i=i, j=j})
+                    end 
                     Pixels[i][j].color = DrawColor
                     Pixels[i][j].background = false
                 end 
@@ -87,9 +91,20 @@ function love.draw()
         love.graphics.rectangle("fill", v.x, v.y, CellSize, CellSize)
         love.graphics.setColor({0, 0, 0, 1})
         love.graphics.rectangle("line", v.x, v.y, CellSize, CellSize)
-    end 
+    end
 end 
 
 function love.mousepressed(x, y, button)
 
 end
+
+function love.keypressed(key, scancode, isrepeat)
+    if key == "z" then 
+        if #Actions > 0 then 
+            local latest_action = table.remove(Actions, 1)
+            Pixels[latest_action.i][latest_action.j].color = latest_action.color
+            Pixels[latest_action.i][latest_action.j].background = latest_action.background
+        end 
+    end 
+end
+
