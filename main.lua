@@ -1,5 +1,3 @@
-
-
 Mode = "draw"
 BackgroundColor = {name="white", rgba={1, 1, 1, 1}}
 DrawColor = {name="black", rgba={0, 0, 0, 1}}
@@ -49,6 +47,30 @@ function love.update(dt)
             if mouse_x > v.x and mouse_x < v.x + CellSize and mouse_y > v.y and mouse_y < v.y + CellSize then 
                 DrawColor = v.color
             end 
+        end 
+    end 
+
+    if love.mouse.isDown(2) then 
+        local mouse_x, mouse_y = love.mouse.getPosition()
+        local set_background = false
+        for _, v in ipairs(ColorIcons) do
+            if mouse_x > v.x and mouse_x < v.x + CellSize and mouse_y > v.y and mouse_y < v.y + CellSize then 
+                BackgroundColor = v.color
+                set_background = true
+            end 
+        end 
+        for i=0, 16, 1 do 
+            for j=0, 16, 1 do
+                local px = Pixels[i][j].x
+                local py = Pixels[i][j].y
+                if mouse_x > px and mouse_x < px + CellSize and mouse_y > py and mouse_y < py + CellSize then 
+                    Pixels[i][j].color = BackgroundColor
+                    Pixels[i][j].background = true
+                end 
+                if set_background and Pixels[i][j].background == true then 
+                    Pixels[i][j].color = BackgroundColor
+                end 
+            end
         end 
     end 
 end
