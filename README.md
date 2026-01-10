@@ -1,3 +1,3 @@
 ## Draw
 
-I was very bored when I made this. It draws things. 
+Just a fun little pixel art program I made using Love2D. 
