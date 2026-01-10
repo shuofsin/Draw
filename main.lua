@@ -9,33 +9,59 @@ ColorIcons = {}
 Colors = {
     {name="white", rgba={1, 1, 1, 1}},
     {name="black", rgba={0, 0, 0, 1}},
-    {name="red", rgba={1, 0, 0, 1}},
-    {name="green", rgba={0, 1, 0, 1}},
-    {name="blue", rgba={0, 0, 1, 1}},
+    {name="grey", rgba={0.5, 0.5, 0.5, 1}},
 }
 Actions = {}
 
 function love.load()
-    for i=0,16,1 do
+    for i=0,15,1 do
         Pixels[i] = {}
-        for j=0,16,1 do
+        for j=0,15,1 do
             local xp = i * CellSize + 200
             local yp = j * CellSize
             Pixels[i][j] = {x=xp, y=yp, color=BackgroundColor, background=true}
         end
     end
+    local r = 1.0
+    local g = 0.0
+    local b = 0.0
+    for i=0,60,1 do 
+        table.insert(Colors, {name="color", rgba={r, g, b, 1}})
+        if i < 20 then 
+            if g < 1 then 
+                g = g + 0.1
+            else
+                r = r - 0.1
+            end 
+        end 
+        if i >= 20 and i < 40 then 
+            if b < 1 then 
+                b = b + 0.1
+            else 
+                g = g - 0.1
+            end 
+        end 
+        if i >= 40 then
+            if r < 1 then 
+                r = r + 0.1
+            else 
+                b = b - 0.1
+            end 
+        end 
+    end 
     for i, v in ipairs(Colors) do 
-        local x = (((i-1) % 4) * CellSize)
-        local y = (math.floor((i-1) / 4) * CellSize)
+        local x = (((i) % 4) * CellSize)
+        local y = (math.floor((i) / 4) * CellSize)
         ColorIcons[i] = {x=x, y=y, color=v}
     end 
+    love.window.setTitle("DRAW")
 end
 
 function love.update(dt)
     if love.mouse.isDown(1) and Mode == "draw" then 
         local mouse_x, mouse_y = love.mouse.getPosition()
-        for i=0, 16, 1 do 
-            for j=0, 16, 1 do
+        for i=0, 15, 1 do 
+            for j=0, 15, 1 do
                 local px = Pixels[i][j].x
                 local py = Pixels[i][j].y
                 if mouse_x > px and mouse_x < px + CellSize and mouse_y > py and mouse_y < py + CellSize then 
@@ -63,8 +89,8 @@ function love.update(dt)
                 set_background = true
             end 
         end 
-        for i=0, 16, 1 do 
-            for j=0, 16, 1 do
+        for i=0, 15, 1 do 
+            for j=0, 15, 1 do
                 local px = Pixels[i][j].x
                 local py = Pixels[i][j].y
                 if mouse_x > px and mouse_x < px + CellSize and mouse_y > py and mouse_y < py + CellSize then 
@@ -80,8 +106,8 @@ function love.update(dt)
 end
 
 function love.draw()
-    for i=0, 16, 1 do 
-        for j=0, 16, 1 do
+    for i=0, 15, 1 do 
+        for j=0, 15, 1 do
             love.graphics.setColor(Pixels[i][j].color.rgba)
             love.graphics.rectangle("fill", Pixels[i][j].x, Pixels[i][j].y, CellSize, CellSize)
         end 
@@ -92,14 +118,14 @@ function love.draw()
         love.graphics.setColor({0, 0, 0, 1})
         love.graphics.rectangle("line", v.x, v.y, CellSize, CellSize)
     end
+    love.graphics.setColor(DrawColor.rgba)
+    love.graphics.rectangle("fill", 0, 0, CellSize, CellSize)
+    love.graphics.setColor({1, 1, 1, 1})
+    love.graphics.rectangle("line", 0, 0, CellSize, CellSize)
 end 
 
-function love.mousepressed(x, y, button)
-
-end
-
 function love.keypressed(key, scancode, isrepeat)
-    if key == "z" then 
+    if key == "space" then 
         if #Actions > 0 then 
             local latest_action = table.remove(Actions, 1)
             Pixels[latest_action.i][latest_action.j].color = latest_action.color
